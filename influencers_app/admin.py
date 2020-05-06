@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from influencers_app.models import Influencer, Content
+admin.site.register(Influencer)
+admin.site.register(Content)

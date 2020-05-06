@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'influencers_app',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
-
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale/'),
+)
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
