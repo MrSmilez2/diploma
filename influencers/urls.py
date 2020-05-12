@@ -23,4 +23,5 @@ urlpatterns = [
         include(('django.contrib.auth.urls', 'django.contrib.auth'),
         namespace='auth')
     ),
+    path("", include("influencers_app.urls")),
 ]

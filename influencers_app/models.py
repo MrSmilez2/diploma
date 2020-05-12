@@ -3,12 +3,27 @@ from django.contrib.auth import get_user_model
 
 
 class Influencer(models.Model):
+    name = models.CharField(max_length=45, unique=True)
+    channels_url = models.CharField(max_length=100, unique=True)
+    email = models.CharField(max_length=50, unique=True)
     responsible = models.ForeignKey(
         get_user_model(),
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='responsible'
+        related_name='responsible',
+        default=None
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class InfluencersInformation(models.Model):
+    channel_name = models.ForeignKey(
+        'Influencer',
+        on_delete=models.CASCADE,
+        null=True
     )
     REVIEWDONE = 'RD'
     AWAITINGREVIEW = 'AR'
@@ -28,25 +43,20 @@ class Influencer(models.Model):
         (EMAILINQUIRYSENT, 'Email inquiry sent'),
         (ONHOLD, 'On hold')
     ]
-    name = models.CharField(max_length=45, unique=True)
-    channels_url = models.CharField(max_length=100, unique=True)
-    location = models.CharField(max_length=20, unique=True)
+    location = models.CharField(max_length=20)
     subscribers = models.IntegerField()
-    email = models.CharField(max_length=50, unique=True)
     progress = models.CharField(
         max_length=2,
         choices=PROGRESS_CHOICES,
         default=EMAILINQUIRYSENT
     )
-    date_of_last_email = models.DateField(auto_created=True)
+    date_of_last_email = models.DateField(auto_created=True, null=True,
+                                          blank=True)
     review_notes = models.TextField()
     number_of_followups = models.IntegerField()
     permission_for_ads = models.BooleanField()
     notes = models.TextField()
     website = models.CharField(max_length=45, unique=True)
-
-    def __str__(self):
-        return self.name
 
 
 class Content(models.Model):
@@ -67,8 +77,14 @@ class Content(models.Model):
         'Influencer',
         on_delete=models.CASCADE
     )
+    video_name = models.CharField(max_length=100, unique=True, null=True)
+    video_url = models.CharField(max_length=100, unique=True, null=True)
     date_of_publication = models.DateField()
     number_of_views = models.IntegerField(null=True, blank=True)
     number_of_comments = models.IntegerField(null=True, blank=True)
     number_of_likes = models.IntegerField(null=True, blank=True)
     number_of_dislikes = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+
+        return '{}, {}'.format(self.channel_name, self.video_name)
