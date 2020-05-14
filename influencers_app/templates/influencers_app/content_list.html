@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ channel_name }}</h1>
+<table class="table table-bordered table-dark">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">video_name</th>
+      <th scope="col">video_url</th>
+      <th scope="col">date_of_publication</th>
+        <th scope="col">number_of_views</th>
+        <th scope="col">number_of_comments</th>
+        <th scope="col">number_of_likes</th>
+        <th scope="col">number_of_dislikes</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for video in videos %}
+    <tr>
+        <th scope="row">{{ video.id }}</th>
+      <th scope="row">{{ video.video_name }}</th>
+      <th scope="row"><a href="{{ video.video_url }}">{{ video.video_url }}</a></th>
+      <th scope="row">{{ video.date_of_publication }}</th>
+      <td>{{ video.number_of_views }}</td>
+      <td>{{ video.number_of_comments }}</td>
+      <td>{{ video.number_of_likes }}</td>
+      <td>{{ video.number_of_dislikes }}</td>
+    </tr>
+  {% endfor %}
+  <tr>
+        <th scope="row"></th>
+      <th scope="row"></th>
+      <th scope="row"></th>
+      <th scope="row">Total:</th>
+      <td>{{ sum_views }}</td>
+      <td>{{ sum_comments }}</td>
+      <td>{{ sum_likes }}</td>
+      <td>{{ sum_dislikes }}</td>
+    </tr>
+{% endblock content %}
