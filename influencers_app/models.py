@@ -56,7 +56,11 @@ class InfluencersInformation(models.Model):
     number_of_followups = models.IntegerField()
     permission_for_ads = models.BooleanField()
     notes = models.TextField()
-    website = models.CharField(max_length=45, unique=True)
+    website = models.CharField(max_length=45, unique=True, null=True)
+
+
+    def __str__(self):
+        return f'{self.channel_name}'
 
 
 class Content(models.Model):
