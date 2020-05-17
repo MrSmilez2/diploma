@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.signals import pre_save
 
+from django.utils.text import slugify
 
 class Influencer(models.Model):
     name = models.CharField(max_length=45, unique=True)
+    slug = models.SlugField(unique=True)
     channels_url = models.CharField(max_length=100, unique=True)
     email = models.CharField(max_length=50, unique=True)
     responsible = models.ForeignKey(
@@ -92,3 +95,12 @@ class Content(models.Model):
     def __str__(self):
 
         return '{}, {}'.format(self.channel_name, self.video_name)
+
+def pre_save_influencer_receiver(sender, instance, *args, **kwargs):
+    slug = slugify(instance.name)
+    exists = Influencer.objects.filter(slug=slug).exists()
+    if exists:
+        slug = "%s-%s" %(slug,instance.id)
+    instance.slug = slug
+
+pre_save.connect(pre_save_influencer_receiver,sender=Influencer)

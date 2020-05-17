@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
+
 {% block content%}
-{% for detail in details %}
-    <p>{{detail.channel_name}}</p>
-<p>{{ detail.PROGRESS_CHOICES }}</p>
+<a href="{% url  'details' %}"><button>All</button></a>
+<a href="{% url  'details' %}?responsible=2"><button>Maks</button></a>
+<a href="{% url  'details' %}?responsible=3"><button>Anna</button></a>
 <table class="table table-bordered table-dark">
   <thead>
     <tr>
@@ -24,7 +25,7 @@
   <tbody>
   {% for detail in details %}
     <tr>
-        <th scope="row">{{ detail.id }}</th>
+        <th scope="row">{{ detail.channel_name.responsible }}</th>
       <th scope="row">{{ detail.channel_name }}</th>
       <th scope="row">{{ detail.channel_name.channels_url }}</th>
       <th scope="row">{{ detail.channel_name.email }}</th>
@@ -42,7 +43,5 @@
 
   </tbody>
 </table>
-
-
-{% endfor %}
+<p>{{details}}</p>
 {% endblock content%}

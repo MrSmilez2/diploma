@@ -17,7 +17,7 @@
   <tbody>
   {% for video in videos %}
     <tr>
-        <th scope="row">{{ video.id }}</th>
+        <th scope="row">{{ video.channel_name }}</th>
       <th scope="row">{{ video.video_name }}</th>
       <th scope="row"><a href="{{ video.video_url }}">{{ video.video_url }}</a></th>
       <th scope="row">{{ video.date_of_publication }}</th>
