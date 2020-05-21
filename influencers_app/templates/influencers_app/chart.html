@@ -45,8 +45,8 @@
     {% endblock scripts %}
 
     {% block content %}
-    <a href="{% url  'charts' pk=1 %}"><button>Count of videos</button></a>
-    <a href="{% url  'charts' pk=2 %}"><button>Sum of video views</button></a>
-    <a href="{% url  'charts' pk=3 %}"><button>Sum of comments</button></a>
+    <a href="{% url  'charts' pk=1 %}"><button class="btn btn-primary">Count of videos</button></a>
+    <a href="{% url  'charts' pk=2 %}"><button class="btn btn-primary">Sum of video views</button></a>
+    <a href="{% url  'charts' pk=3 %}"><button class="btn btn-primary">Sum of comments</button></a>
         <canvas id="myChart" width="400" height="200"></canvas>
     {% endblock content %}

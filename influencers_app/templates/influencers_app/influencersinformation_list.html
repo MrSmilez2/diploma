@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content%}
-<a href="{% url  'details' %}"><button>All</button></a>
-<a href="{% url  'details' %}?responsible=2"><button>Maks</button></a>
-<a href="{% url  'details' %}?responsible=3"><button>Anna</button></a>
+<a href="{% url  'details' %}"><button class="btn btn-dark">All</button></a>
+<a href="{% url  'details' %}?responsible=2"><button class="btn btn-info">Maks</button></a>
+<a href="{% url  'details' %}?responsible=3"><button class="btn btn-info">Anna</button></a>
 <table class="table table-bordered table-dark">
   <thead>
     <tr>
