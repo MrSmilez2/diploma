@@ -1,19 +1,5 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <!-- semantic UI -->
-        <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.14/semantic.min.css">
-        <!--Chart js-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
-        <!-- jQuery -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <title>{%block title %}{% endblock title %}</title>
-    </head>
-    <body>
+{% extends "base.html" %}
+
     {% block scripts %}
     <script>
         $(document).ready(function(){
@@ -23,7 +9,7 @@
                 data: {
                     labels: [{%for item in video_count_month%}'{{item.month}}',{% endfor %}],
                     datasets: [{
-                        label: 'Video views',
+                        label: '{{title}}',
                         data: [{%for item in video_count_month%}'{{item.total}}',{% endfor %}],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
@@ -59,7 +45,8 @@
     {% endblock scripts %}
 
     {% block content %}
+    <a href="{% url  'charts' pk=1 %}"><button>Count of videos</button></a>
+    <a href="{% url  'charts' pk=2 %}"><button>Sum of video views</button></a>
+    <a href="{% url  'charts' pk=3 %}"><button>Sum of comments</button></a>
         <canvas id="myChart" width="400" height="200"></canvas>
     {% endblock content %}
-    </body>
-</html>
