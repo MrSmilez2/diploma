@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<a href="{% url  'details' %}"><button class="btn btn-dark">All</button></a>
+<a href="{% url  'details' %}?responsible=2"><button class="btn btn-info">Maks</button></a>
+<a href="{% url  'details' %}?responsible=3"><button class="btn btn-info">Anna</button></a>
+<table class="table table-bordered table-dark">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Channel_name</th>
+      <th scope="col">URL</th>
+      <th scope="col">EMAIL</th>
+        <th scope="col">location</th>
+        <th scope="col">progress</th>
+        <th scope="col">Number of subscribers</th>
+        <th scope="col">date_of_last_email</th>
+        <th scope="col">review_notes</th>
+        <th scope="col">number_of_followups</th>
+        <th scope="col">permission_for_ads</th>
+        <th scope="col">notes</th>
+        <th scope="col">website</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for detail in details %}
+    <tr>
+        <th scope="row">{{ detail.channel_name.responsible }}</th>
+      <th scope="row">{{ detail.channel_name }}</th>
+      <th scope="row">{{ detail.channel_name.channels_url }}</th>
+      <th scope="row">{{ detail.channel_name.email }}</th>
+      <td>{{ detail.location }}</td>
+      <td>{{ detail.progress }}</td>
+      <td>{{ detail.subscribers }}</td>
+      <td>{{ detail.date_of_last_email }}</td>
+      <td>{{ detail.review_notes }}</td>
+      <td>{{ detail.number_of_followups }}</td>
+      <td>{{ detail.permission_for_ads }}</td>
+      <td>{{ detail.notes }}</td>
+      <td>{{ detail.website }}</td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+{% endblock content%}
