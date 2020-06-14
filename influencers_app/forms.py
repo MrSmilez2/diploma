@@ -14,6 +14,11 @@ class InfluencerForm(forms.ModelForm):
         model = Influencer
         fields = ("name", "channels_url", "email", "responsible")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'table table-bordered '
+
 
 class AuthUserForm(AuthenticationForm, forms.ModelForm):
     class Meta:
@@ -31,5 +36,3 @@ class AuthUserForm(AuthenticationForm, forms.ModelForm):
         if commit:
             user.save()
         return user
-
-

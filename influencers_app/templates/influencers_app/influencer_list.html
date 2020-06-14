@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<table class="table table-bordered table-dark">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Channel_name</th>
+      <th scope="col">URL</th>
+      <th scope="col">EMAIL</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for influencer in object_list %}
+    <tr>
+      <th scope="row">{{ influencer.id }}</th>
+      <td>{{ influencer.name }}</td>
+      <td>{{ influencer.channels_url }}</td>
+      <td>{{ influencer.email }}</td>
+      <td>{{ influencer.responsible }}</td>
+      <td><a href="{% url 'influencer_update' slug=influencer.slug %}"> Change </a></td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+<div class="col-4">
+<!--  <form method="post" action="" >-->
+<!--      {% csrf_token %}-->
+<!--      {{ form }}-->
+<!--    <div class="form-group">-->
+<!--      <label for="formGroupExampleInput">Name</label>-->
+<!--      <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Channels name" name="name">-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label for="formGroupExampleInput2">Channels URL</label>-->
+<!--      <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Channels URL" name="channels_url">-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label for="formGroupExampleInput2">Email</label>-->
+<!--      <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Email" name="email">-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--        <select id="id_user" name="responsible" class="btn btn-secondary dropdown-toggle">-->
+<!--          <option value="">Choose responsible</option>-->
+<!--          {% for responsible in responsibles %}-->
+<!--            <option value="{{ responsible.id }}" name="{{ responsible.username }}">{{ responsible.username }}</option>-->
+<!--          {% endfor %}-->
+<!--        </select>-->
+<!--    </div>-->
+<!--     <button type="submit" class="btn btn-primary mb-2" value="submit">Add</button>-->
+<!--  </form>-->
+  <a href="{% url 'influencer_create' %}"><button type="button" class="btn btn-primary mb-2" value="submit">Create New Influencer</button></a>
+</div>
+{% endblock content %}

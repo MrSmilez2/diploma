@@ -1,19 +1,17 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.models import User
 from django.db.models import Sum, Avg, Count
 from django.db.models.functions import TruncMonth
-from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views.generic.base import TemplateView, View
+from django.urls import reverse_lazy, reverse
+from django.views.generic import UpdateView, CreateView
+from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
-from django.views.generic.base import ContextMixin
-from django.contrib.auth.models import User
+
 
 from .models import Influencer, Content, InfluencersInformation
-from django.conf import settings
 
 from .forms import InfluencerForm, AuthUserForm
-from time import strftime
 
 
 class UserLoginView(LoginView):
@@ -29,37 +27,61 @@ class UserLogoutView(LogoutView):
     next_page = reverse_lazy('login_page')
 
 
-class InfluencerView(LoginRequiredMixin, ContextMixin, View):
+class InfluencersNameSearchMixin:
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        influencers_name_search = self.request.GET.get(
+            'influencers_name_search')
+        if influencers_name_search:
+            queryset = queryset.filter(name__icontains=influencers_name_search)
+        return queryset
+
+
+class InfluencerView(InfluencersNameSearchMixin, ListView, LoginRequiredMixin):
+    # TODO:посмотреть PostMixin
+    model = Influencer
     login_url = 'login_page'
-    paginate_by = settings.PAGE_SIZE
+    # paginate_by = settings.PAGE_SIZE
 
     @property
     def responsibles(self):
         return User.objects.all()
 
-    def get(self, request):
-        influencers = Influencer.objects.all()
-        responsibles = self.responsibles
-        return render(request, 'influencers_list.html', {
-            "influencers": influencers,
-            "responsibles": responsibles
-        })
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['responsibles'] = self.responsibles
+        return context
 
-    def post(self, request, *args, **kwargs):
-        influencers = Influencer.objects.all()
-        form = InfluencerForm(request.POST)
-        responsibles = self.responsibles
-        if form.is_valid():
-            form.save()
-        return render(request, 'influencers_list.html', {
-            "influencers": influencers,
-            "responsibles": responsibles,
-        })
+    # def post(self, request, *args, **kwargs):
+    #     self.object_list = self.get_queryset()
+    #     form = InfluencerForm(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #     context = self.get_context_data()
+    #     return self.render_to_response(context)
+
+
+class InfluencerCreateView(CreateView):
+    model = Influencer
+    form_class = InfluencerForm
+    template_name = "influencer_create.html"
+    queryset = Influencer.objects.all()
+
+    def get_success_url(self):
+        return reverse('influencers_list')
+
+
+class InfluencerUpdateView(UpdateView):
+    model = Influencer
+    form_class = InfluencerForm
+    template_name = "influencer_update.html"
+
+    def get_success_url(self):
+        return reverse('influencers_list')
 
 
 class InfluencersInformationView(LoginRequiredMixin, ListView):
     login_url = 'login_page'
-    # model = InfluencersInformation
     template_name = "influencersinformation_list.html"
 
     def get_template_name(self):
@@ -70,6 +92,7 @@ class InfluencersInformationView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         details = InfluencersInformation.objects.select_related('channel_name')
+        print(InfluencersInformation.objects.all())
         responsible = self.request.GET.get('responsible')
         if responsible:
             details = details.filter(channel_name__responsible=responsible)
@@ -97,43 +120,44 @@ class ContentView(LoginRequiredMixin, ListView):
             'date_of_publication')
         influencer = self.request.GET.get('influencer')
         if influencer:
-            influencer = influencer[1:-1]
             videos = videos.filter(channel_name__name=influencer)
         return videos
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         videos = self.get_queryset
+        video_data_dict = Content.objects.select_related(
+            'channel_name').aggregate(
+            Sum('number_of_views'), Sum('number_of_comments'),
+            Sum('number_of_likes'), Sum('number_of_dislikes'),
+            Avg('number_of_views'))
         influencer = self.request.GET.get('influencer')
         context['videos'] = videos
-        context['sum_views'] = Content.objects.select_related(
-            'channel_name').aggregate(
-            Sum('number_of_views')).get('number_of_views__sum')
-        context['sum_comments'] = Content.objects.aggregate(
-            Sum('number_of_comments')).get('number_of_comments__sum')
-        context['sum_likes'] = Content.objects.aggregate(
-            Sum('number_of_likes')).get('number_of_likes__sum')
-        context['sum_dislikes'] = Content.objects.aggregate(
-            Sum('number_of_dislikes')).get('number_of_dislikes__sum')
-        context['avg'] = Content.objects.aggregate(Avg('number_of_views')).get(
+        context['sum_views'] = video_data_dict.get('number_of_views__sum')
+        context['sum_comments'] = video_data_dict.get(
+            'number_of_comments__sum')
+        context['sum_likes'] = video_data_dict.get('number_of_likes__sum')
+        context['sum_dislikes'] = video_data_dict.get(
+            'number_of_dislikes__sum')
+        context['avg'] = video_data_dict.get(
             'number_of_views__avg')
         if influencer:
-            context['sum_views'] = Content.objects.filter(
-                channel_name__name=influencer[1:-1]).select_related(
+            filtered_video_data_dict = Content.objects.filter(
+                channel_name__name=influencer).select_related(
                 'channel_name').aggregate(
-                Sum('number_of_views')).get('number_of_views__sum')
-            context['sum_comments'] = Content.objects.filter(
-                channel_name__name=influencer[1:-1]).aggregate(
-                Sum('number_of_comments')).get('number_of_comments__sum')
-            context['sum_likes'] = Content.objects.filter(
-                channel_name__name=influencer[1:-1]).aggregate(
-                Sum('number_of_likes')).get('number_of_likes__sum')
-            context['sum_dislikes'] = Content.objects.filter(
-                channel_name__name=influencer[1:-1]).aggregate(
-                Sum('number_of_dislikes')).get('number_of_dislikes__sum')
-            context['avg'] = Content.objects.filter(
-                channel_name__name=influencer[1:-1]).aggregate(
-                Avg('number_of_views')).get('number_of_views__avg')
+                Sum('number_of_views'), Sum('number_of_comments'),
+                Sum('number_of_likes'), Sum('number_of_dislikes'),
+                Avg('number_of_views'))
+            context['sum_views'] = filtered_video_data_dict.get(
+                'number_of_views__sum')
+            context['sum_comments'] = filtered_video_data_dict.get(
+                'number_of_comments__sum')
+            context['sum_likes'] = filtered_video_data_dict.get(
+                'number_of_likes__sum')
+            context['sum_dislikes'] = filtered_video_data_dict.get(
+                'number_of_dislikes__sum')
+            context['avg'] = filtered_video_data_dict.get(
+                'number_of_views__avg')
         return context
 
 
@@ -143,28 +167,28 @@ class ChartView(LoginRequiredMixin, TemplateView):
     login_url = 'login_page'
 
     def get_context_data(self, **kwargs):
-        video_count = Content.objects.annotate(
-            month=TruncMonth('date_of_publication')).values('month').annotate(
-            total=Count('video_name'))
-        sum_of_views = Content.objects.annotate(
-            month=TruncMonth('date_of_publication')).values('month').annotate(
-            total=Sum('number_of_views'))
-        sum_of_comments = Content.objects.annotate(
-            month=TruncMonth('date_of_publication')).values('month').annotate(
-            total=Sum('number_of_comments'))
+        video_information_by_month = Content.objects.annotate(
+            month=TruncMonth('date_of_publication')).values('month')
+        video_count = video_information_by_month.annotate(
+            count_of_videos=Count('video_name'),
+            sum_of_views=Sum('number_of_views'),
+            sum_of_comments=Sum('number_of_comments'))
         for item in video_count:
             item['month'] = item.get('month').strftime('%Y %b')
-        print(video_count)
         context = super().get_context_data(**kwargs)
         context['qs'] = Content.objects.select_related('channel_name')
 
         if self.kwargs['pk'] == 1:
+            for item in video_count:
+                item['total'] = item.get('count_of_videos')
             context['title'] = 'Count of videos'
-            context['video_count_month'] = video_count
         elif self.kwargs['pk'] == 2:
+            for item in video_count:
+                item['total'] = item.get('sum_of_views')
             context['title'] = 'Sum of video views'
-            context['video_count_month'] = sum_of_views
         elif self.kwargs['pk'] == 3:
+            for item in video_count:
+                item['total'] = item.get('sum_of_comments')
             context['title'] = 'Sum of comments'
-            context['video_count_month'] = sum_of_comments
+        context['video_count_month'] = video_count
         return context

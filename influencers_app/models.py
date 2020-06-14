@@ -4,6 +4,7 @@ from django.db.models.signals import pre_save
 
 from django.utils.text import slugify
 
+
 class Influencer(models.Model):
     name = models.CharField(max_length=45, unique=True)
     slug = models.SlugField(unique=True)
@@ -61,14 +62,13 @@ class InfluencersInformation(models.Model):
     notes = models.TextField()
     website = models.CharField(max_length=45, unique=True, null=True)
 
-
     def __str__(self):
         return f'{self.channel_name}'
 
 
 class Content(models.Model):
     YOUTUBEVIDEO = 'YV'
-    TIKTOKVIDEO= 'TV'
+    TIKTOKVIDEO = 'TV'
     INSTAGRAMPOST = 'IP'
     CONTENT_CHOICES = [
         (YOUTUBEVIDEO, 'Youtube video'),
@@ -96,11 +96,13 @@ class Content(models.Model):
 
         return '{}, {}'.format(self.channel_name, self.video_name)
 
+
 def pre_save_influencer_receiver(sender, instance, *args, **kwargs):
     slug = slugify(instance.name)
     exists = Influencer.objects.filter(slug=slug).exists()
     if exists:
-        slug = "%s-%s" %(slug,instance.id)
+        slug = "%s-%s" % (slug, instance.id)
     instance.slug = slug
 
-pre_save.connect(pre_save_influencer_receiver,sender=Influencer)
+
+pre_save.connect(pre_save_influencer_receiver, sender=Influencer)

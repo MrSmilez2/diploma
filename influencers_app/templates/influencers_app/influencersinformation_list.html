@@ -9,15 +9,14 @@
     <tr>
       <th scope="col">ID</th>
       <th scope="col">Channel_name</th>
-      <th scope="col">URL</th>
       <th scope="col">EMAIL</th>
         <th scope="col">location</th>
         <th scope="col">progress</th>
         <th scope="col">Number of subscribers</th>
-        <th scope="col">date_of_last_email</th>
-        <th scope="col">review_notes</th>
-        <th scope="col">number_of_followups</th>
-        <th scope="col">permission_for_ads</th>
+        <th scope="col">date of last email</th>
+        <th scope="col">review notes</th>
+        <th scope="col">number of followups</th>
+        <th scope="col">permission for ads</th>
         <th scope="col">notes</th>
         <th scope="col">website</th>
     </tr>
@@ -26,11 +25,27 @@
   {% for detail in details %}
     <tr>
         <th scope="row">{{ detail.channel_name.responsible }}</th>
-      <th scope="row">{{ detail.channel_name }}</th>
-      <th scope="row">{{ detail.channel_name.channels_url }}</th>
+      <th scope="row"><a href="{{ detail.channel_name.channels_url }}">{{ detail.channel_name }}</a></th>
+<!--      <th scope="row">{{ detail.channel_name.channels_url }}</th>-->
       <th scope="row">{{ detail.channel_name.email }}</th>
       <td>{{ detail.location }}</td>
-      <td>{{ detail.progress }}</td>
+      {% if detail.progress == 'RD'%}
+        <td class="rew_done">Review Done</td>
+      {% elif detail.progress == 'AR'%}
+      <td>Awaiting Reviewe</td>
+      {% elif detail.progress == 'PS'%}
+      <td>Product Sent</td>
+      {% elif detail.progress == 'CM'%}
+      <td>Communicating</td>
+      {% elif detail.progress == 'OD'%}
+      <td>Offer Declined</td>
+      {% elif detail.progress == 'RJ'%}
+      <td>Rejection</td>
+      {% elif detail.progress == 'ES'%}
+      <td>Email Inauiry Sent</td>
+      {% elif detail.progress == 'OH'%}
+      <td>On Hold</td>
+      {% endif %}
       <td>{{ detail.subscribers }}</td>
       <td>{{ detail.date_of_last_email }}</td>
       <td>{{ detail.review_notes }}</td>
@@ -44,3 +59,4 @@
   </tbody>
 </table>
 {% endblock content%}
+
