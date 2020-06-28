@@ -15,4 +15,6 @@ urlpatterns = [
          name='details'),
     path('content', views.ContentView.as_view(), name='content'),
     path('content/charts/<int:pk>', views.ChartView.as_view(), name='charts'),
+    path('video', views.VideoInformationView.as_view(), name='video'),
+    path('video/create', views.VideoInformationCreateView.as_view(), name='video_create'),
 ]

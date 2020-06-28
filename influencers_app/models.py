@@ -7,7 +7,7 @@ from django.utils.text import slugify
 
 class Influencer(models.Model):
     name = models.CharField(max_length=45, unique=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, null=True)
     channels_url = models.CharField(max_length=100, unique=True)
     email = models.CharField(max_length=50, unique=True)
     responsible = models.ForeignKey(
@@ -95,6 +95,14 @@ class Content(models.Model):
     def __str__(self):
 
         return '{}, {}'.format(self.channel_name, self.video_name)
+
+
+class VideoInformation(models.Model):
+    video_id = models.CharField(max_length=100, unique=True)
+    views_count = models.IntegerField(null=True, blank=True)
+    comments_count = models.IntegerField(null=True, blank=True)
+    likes_count = models.IntegerField(null=True, blank=True)
+    dislikes_count = models.IntegerField(null=True, blank=True)
 
 
 def pre_save_influencer_receiver(sender, instance, *args, **kwargs):

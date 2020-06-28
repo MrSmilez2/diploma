@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.models import User
@@ -7,11 +8,15 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import UpdateView, CreateView
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
+import re
+from googleapiclient.discovery import build
 
 
-from .models import Influencer, Content, InfluencersInformation
 
-from .forms import InfluencerForm, AuthUserForm
+from .models import Influencer, Content, InfluencersInformation, \
+    VideoInformation
+
+from .forms import InfluencerForm, AuthUserForm, VideoInformationForm
 
 
 class UserLoginView(LoginView):
@@ -192,3 +197,57 @@ class ChartView(LoginRequiredMixin, TemplateView):
             context['title'] = 'Sum of comments'
         context['video_count_month'] = video_count
         return context
+
+
+class VideoInformationView(ListView):
+    model = VideoInformation
+    form_class = VideoInformationForm
+    template_name = "videoinformation_list.html"
+    queryset = VideoInformation.objects.all()
+
+
+class VideoInformationCreateView(CreateView):
+    model = VideoInformation
+    form_class = VideoInformationForm
+    template_name = "videoinformation_create.html"
+    queryset = VideoInformation.objects.all()
+
+    def get_success_url(self):
+        return reverse('video')
+
+    # def get_video_information_api(self):
+    #     api_key = 'AIzaSyCWuZ5enVn4ga0G8s_F5LlTY9OkKCnd6tM'
+
+    def form_valid(self, form):
+
+        """If the form is valid, save the associated model."""
+        new_video = form.save(commit=False)
+        video_id = new_video.video_id
+        print(len(video_id))
+        if len(video_id) > 11:
+            video_id = re.sub(r'https://www\.youtube\.com/watch\?v=', '', video_id)
+
+        print(video_id)
+        api_key = settings.API_KEY
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        request = youtube.videos().list(
+            part="statistics, snippet",
+            id=video_id
+        )
+        response = request.execute()
+        print(response)
+        title = response['items'][0]['snippet']['title']
+        publishedAt = response['items'][0]['snippet']['publishedAt']
+        channelId = response['items'][0]['snippet']['channelId']
+        channelTitle = response['items'][0]['snippet']['channelTitle']
+        print(title)
+        print(publishedAt)
+        print(channelId)
+        print( channelTitle)
+        new_video.views_count = response['items'][0]['statistics']['viewCount']
+        new_video.likes_count = response['items'][0]['statistics']['likeCount']
+        new_video.dislikes_count = response['items'][0]['statistics']['dislikeCount']
+        new_video.comments_count = response['items'][0]['statistics']['commentCount']
+        new_video.save()
+
+        return super().form_valid(form)

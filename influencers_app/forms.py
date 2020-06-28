@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 
-from .models import Influencer
+from .models import Influencer, VideoInformation
 
 
 class InfluencerForm(forms.ModelForm):
@@ -36,3 +36,11 @@ class AuthUserForm(AuthenticationForm, forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class VideoInformationForm(forms.ModelForm):
+    class Meta:
+        model = VideoInformation
+        fields = ('video_id', 'views_count', 'comments_count', 'likes_count',
+                  'dislikes_count')
+

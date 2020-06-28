@@ -131,9 +131,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+API_KEY = 'AIzaSyCWuZ5enVn4ga0G8s_F5LlTY9OkKCnd6tM'
+
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
 PAGE_SIZE = 10
 
 SITE_ID = 1
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/2'
