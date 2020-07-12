@@ -26,4 +26,6 @@ if settings.DEBUG:
     import debug_toolbar
     urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
+        path("select2/", include("django_select2.urls")),
+
     ] + urlpatterns

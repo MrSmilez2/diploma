@@ -1,5 +1,6 @@
-from django.db import models
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.db.models.signals import pre_save
 
 from django.utils.text import slugify
@@ -9,7 +10,7 @@ class Influencer(models.Model):
     name = models.CharField(max_length=45, unique=True)
     slug = models.SlugField(unique=True, null=True)
     channels_url = models.CharField(max_length=100, unique=True)
-    email = models.CharField(max_length=50, unique=True)
+    email = models.CharField(max_length=50, unique=True, null=True, blank=True)
     responsible = models.ForeignKey(
         get_user_model(),
         null=True,
@@ -29,14 +30,15 @@ class InfluencersInformation(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
-    REVIEWDONE = 'RD'
-    AWAITINGREVIEW = 'AR'
-    PRODUCTSSENT = 'PS'
-    COMMUNICATING = 'CM'
-    OFFERDECLINED = 'OD'
-    REJECTION = 'RJ'
-    EMAILINQUIRYSENT = 'ES'
-    ONHOLD = 'OH'
+    REVIEWDONE = '1RD'
+    AWAITINGREVIEW = '2AR'
+    PRODUCTSSENT = '3PS'
+    COMMUNICATING = '4CM'
+    OFFERDECLINED = '5OD'
+    REJECTION = '6RJ'
+    EMAILINQUIRYSENT = '7ES'
+    ONHOLD = '8OH'
+    DEFAULTVALUE = '9DV'
     PROGRESS_CHOICES = [
         (REVIEWDONE, 'Review done'),
         (AWAITINGREVIEW, 'Awaiting review'),
@@ -45,22 +47,27 @@ class InfluencersInformation(models.Model):
         (OFFERDECLINED, 'Offer declined'),
         (REJECTION, 'Rejection'),
         (EMAILINQUIRYSENT, 'Email inquiry sent'),
-        (ONHOLD, 'On hold')
+        (ONHOLD, 'On hold'),
+        (DEFAULTVALUE, 'Send your first message')
     ]
-    location = models.CharField(max_length=20)
-    subscribers = models.IntegerField()
+    location = models.CharField(max_length=20, null=True, blank=True,
+                                default=None)
+    subscribers = models.IntegerField(null=True, blank=True, default=None)
     progress = models.CharField(
-        max_length=2,
+        max_length=3,
         choices=PROGRESS_CHOICES,
-        default=EMAILINQUIRYSENT
+        default=DEFAULTVALUE
     )
     date_of_last_email = models.DateField(auto_created=True, null=True,
-                                          blank=True)
-    review_notes = models.TextField()
-    number_of_followups = models.IntegerField()
-    permission_for_ads = models.BooleanField()
-    notes = models.TextField()
-    website = models.CharField(max_length=45, unique=True, null=True)
+                                          blank=True, default=None)
+    review_notes = models.TextField(null=True, blank=True, default=None)
+    number_of_followups = models.IntegerField(null=True, blank=True,
+                                              default=None)
+    permission_for_ads = models.BooleanField(null=True, blank=True,
+                                             default=None)
+    notes = models.TextField(null=True, blank=True, default=None)
+    website = models.CharField(max_length=45, unique=True, null=True,
+                               blank=True, default=None)
 
     def __str__(self):
         return f'{self.channel_name}'
@@ -82,18 +89,18 @@ class Content(models.Model):
     )
     channel_name = models.ForeignKey(
         'Influencer',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        blank=True
     )
-    video_name = models.CharField(max_length=100, unique=True, null=True)
+    video_name = models.CharField(max_length=100, unique=True, null=True, blank=True)
     video_url = models.CharField(max_length=100, unique=True, null=True)
-    date_of_publication = models.DateField()
+    date_of_publication = models.DateField(blank=True)
     number_of_views = models.IntegerField(null=True, blank=True)
     number_of_comments = models.IntegerField(null=True, blank=True)
     number_of_likes = models.IntegerField(null=True, blank=True)
     number_of_dislikes = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-
         return '{}, {}'.format(self.channel_name, self.video_name)
 
 
@@ -103,6 +110,52 @@ class VideoInformation(models.Model):
     comments_count = models.IntegerField(null=True, blank=True)
     likes_count = models.IntegerField(null=True, blank=True)
     dislikes_count = models.IntegerField(null=True, blank=True)
+
+
+class ArtzProductUS(models.Model):
+    sku = models.IntegerField(unique=True)
+    product_name = models.CharField(max_length=100)
+    product_price = models.IntegerField()
+
+    def __str__(self):
+        return '{}, {}'.format(self.sku, self.product_name)
+
+
+class Shipment(models.Model):
+    channel_name = models.ForeignKey(
+        'Influencer',
+        on_delete=models.CASCADE,
+        null=True
+    )
+    NEED_TO_SHIP = 'Need to be shipped'
+    SHIPPED = 'Shipped'
+    SHIPMENT_STATUS = (
+        (NEED_TO_SHIP, 'Need to be shipped'),
+        (SHIPPED, 'Shipped'),
+    )
+    shipment_status = models.CharField(
+        max_length=18,
+        choices=SHIPMENT_STATUS,
+        default=NEED_TO_SHIP
+    )
+    product = models.ManyToManyField(
+        'ArtzProductUS',
+        related_name='products'
+    )
+
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
+    order_number = models.CharField(max_length=10, unique=True, null=True, blank=True)
+
+    def __str__(self):
+        return '{}, {}'.format(self.channel_name, self.created_at)
+
+
+class Book(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    co_authors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='co_authored_by')
+
+
 
 
 def pre_save_influencer_receiver(sender, instance, *args, **kwargs):

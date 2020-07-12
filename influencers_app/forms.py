@@ -1,18 +1,30 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
+from django_select2 import forms as s2forms
 
-from .models import Influencer, VideoInformation
+from .models import Influencer, VideoInformation, Content, \
+    InfluencersInformation, Shipment, Book
 
 
 class InfluencerForm(forms.ModelForm):
     """Форма заполнения новго Influenccer"""
-    # name = forms.CharField(max_length=100, required=True)
-    # channels_url = forms.CharField(max_length=100, required=True)
-    # email = forms.CharField(max_length=100, required=True)
+
     class Meta:
         model = Influencer
         fields = ("name", "channels_url", "email", "responsible")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'table table-bordered '
+
+
+class InfluencersInformationForm(forms.ModelForm):
+    """Форма для обновления и создания полной информации об инфлуенсере"""
+    class Meta:
+        model = InfluencersInformation
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -38,9 +50,48 @@ class AuthUserForm(AuthenticationForm, forms.ModelForm):
         return user
 
 
+class ContentForm(forms.ModelForm):
+    class Meta:
+        model = Content
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'table table-bordered '
+
+
+class ProductWidget(s2forms.ModelSelect2MultipleWidget):
+    search_fields = [
+        "sku__icontains",
+        "product_name__icontains",
+    ]
+
+class ShipmentCreateForm(forms.ModelForm):
+    class Meta:
+        model = Shipment
+        fields = '__all__'
+        widgets = {
+            "product": ProductWidget,
+        }
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'table table-bordered '
+
+
+
+
+
 class VideoInformationForm(forms.ModelForm):
     class Meta:
         model = VideoInformation
         fields = ('video_id', 'views_count', 'comments_count', 'likes_count',
                   'dislikes_count')
+
+
+
+
 

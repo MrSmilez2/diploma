@@ -10,13 +10,16 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 import re
 from googleapiclient.discovery import build
+from django.views import generic
 
+from . import forms, models
 
 
 from .models import Influencer, Content, InfluencersInformation, \
-    VideoInformation
+    VideoInformation, ArtzProductUS, Shipment
 
-from .forms import InfluencerForm, AuthUserForm, VideoInformationForm
+from .forms import InfluencerForm, AuthUserForm, VideoInformationForm, \
+    ContentForm, InfluencersInformationForm, ShipmentCreateForm
 
 
 class UserLoginView(LoginView):
@@ -43,7 +46,6 @@ class InfluencersNameSearchMixin:
 
 
 class InfluencerView(InfluencersNameSearchMixin, ListView, LoginRequiredMixin):
-    # TODO:посмотреть PostMixin
     model = Influencer
     login_url = 'login_page'
     # paginate_by = settings.PAGE_SIZE
@@ -57,14 +59,6 @@ class InfluencerView(InfluencersNameSearchMixin, ListView, LoginRequiredMixin):
         context['responsibles'] = self.responsibles
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object_list = self.get_queryset()
-    #     form = InfluencerForm(request.POST)
-    #     if form.is_valid():
-    #         form.save()
-    #     context = self.get_context_data()
-    #     return self.render_to_response(context)
-
 
 class InfluencerCreateView(CreateView):
     model = Influencer
@@ -74,6 +68,15 @@ class InfluencerCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('influencers_list')
+
+    def form_valid(self, form):
+        new_influencer = form.save(commit=False)
+        new_influencer_name = new_influencer.name
+        new_influencer.save()
+        if Influencer.objects.get(name=new_influencer_name):
+            InfluencersInformation.objects.get_or_create(
+                channel_name_id=new_influencer.id)
+        return super().form_valid(form)
 
 
 class InfluencerUpdateView(UpdateView):
@@ -86,6 +89,7 @@ class InfluencerUpdateView(UpdateView):
 
 
 class InfluencersInformationView(LoginRequiredMixin, ListView):
+    # TODO:сделать правильный порядок статусов
     login_url = 'login_page'
     template_name = "influencersinformation_list.html"
 
@@ -96,8 +100,12 @@ class InfluencersInformationView(LoginRequiredMixin, ListView):
         return templates
 
     def get_queryset(self):
-        details = InfluencersInformation.objects.select_related('channel_name')
-        print(InfluencersInformation.objects.all())
+        details = InfluencersInformation.objects.select_related('channel_name').order_by('progress')
+        influencers_name_search = self.request.GET.get(
+            'influencers_name_search')
+        if influencers_name_search:
+            details = details.filter(channel_name__name__icontains=influencers_name_search)
+        print(details)
         responsible = self.request.GET.get('responsible')
         if responsible:
             details = details.filter(channel_name__responsible=responsible)
@@ -108,6 +116,15 @@ class InfluencersInformationView(LoginRequiredMixin, ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['details'] = details
         return context
+
+
+class InfluencersInformationUpdateView(UpdateView):
+    model = InfluencersInformation
+    form_class = InfluencersInformationForm
+    template_name = 'influencersinformation_update.html'
+
+    def get_success_url(self):
+        return reverse('details')
 
 
 class ContentView(LoginRequiredMixin, ListView):
@@ -166,6 +183,54 @@ class ContentView(LoginRequiredMixin, ListView):
         return context
 
 
+class ContentCreateView(CreateView):
+    model = Content
+    form_class = ContentForm
+    template_name = "content_create.html"
+    queryset = Content.objects.all()
+
+    def get_success_url(self):
+        return reverse('content')
+
+
+    def form_valid(self, form):
+
+        """If the form is valid, save the associated model."""
+        new_video = form.save(commit=False)
+        video_url = new_video.video_url
+        print(len(video_url))
+        if len(video_url) > 11:
+            video_url = re.sub(r'https://www\.youtube\.com/watch\?v=', '', video_url)
+
+        print(video_url)
+        api_key = settings.API_KEY
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        request = youtube.videos().list(
+            part="statistics, snippet",
+            id=video_url
+        )
+        response = request.execute()
+        print(response)
+        channelTitle = response['items'][0]['snippet']['channelTitle']
+        channelId = response['items'][0]['snippet']['channelId']
+        new_video.channel_name = Influencer.objects.get_or_create(name=channelTitle, channels_url=channelId)[0]
+        new_video.video_name = response['items'][0]['snippet']['title']
+        new_video.date_of_publication = response['items'][0]['snippet']['publishedAt'][0:10]
+        print(new_video.video_name)
+        print(new_video.date_of_publication)
+        print(channelId)
+        print( channelTitle)
+        new_video.number_of_views = response['items'][0]['statistics']['viewCount']
+        new_video.number_of_likes = response['items'][0]['statistics']['likeCount']
+        new_video.number_of_dislikes = response['items'][0]['statistics']['dislikeCount']
+        new_video.number_of_comments = response['items'][0]['statistics']['commentCount']
+        new_video.save()
+
+        return super().form_valid(form)
+
+
+
+
 class ChartView(LoginRequiredMixin, TemplateView):
     model = Content
     template_name = 'influencers_app/chart.html'
@@ -206,48 +271,76 @@ class VideoInformationView(ListView):
     queryset = VideoInformation.objects.all()
 
 
-class VideoInformationCreateView(CreateView):
-    model = VideoInformation
-    form_class = VideoInformationForm
-    template_name = "videoinformation_create.html"
-    queryset = VideoInformation.objects.all()
+# class VideoInformationCreateView(CreateView):
+"""Это было тестовое вью, удалить потом"""
+#     model = VideoInformation
+#     form_class = VideoInformationForm
+#     template_name = "videoinformation_create.html"
+#     queryset = VideoInformation.objects.all()
+#
+#     def get_success_url(self):
+#         return reverse('video')
+#
+#
+#     def form_valid(self, form):
+#
+#         """If the form is valid, save the associated model."""
+#         new_video = form.save(commit=False)
+#         video_id = new_video.video_id
+#         print(len(video_id))
+#         if len(video_id) > 11:
+#             video_id = re.sub(r'https://www\.youtube\.com/watch\?v=', '', video_id)
+#
+#         print(video_id)
+#         api_key = settings.API_KEY
+#         youtube = build('youtube', 'v3', developerKey=api_key)
+#         request = youtube.videos().list(
+#             part="statistics, snippet",
+#             id=video_id
+#         )
+#         response = request.execute()
+#         print(response)
+#         title = response['items'][0]['snippet']['title']
+#         publishedAt = response['items'][0]['snippet']['publishedAt']
+#         channelId = response['items'][0]['snippet']['channelId']
+#         channelTitle = response['items'][0]['snippet']['channelTitle']
+#         print(title)
+#         print(publishedAt)
+#         print(channelId)
+#         print( channelTitle)
+#         new_video.views_count = response['items'][0]['statistics']['viewCount']
+#         new_video.likes_count = response['items'][0]['statistics']['likeCount']
+#         new_video.dislikes_count = response['items'][0]['statistics']['dislikeCount']
+#         new_video.comments_count = response['items'][0]['statistics']['commentCount']
+#         new_video.save()
+#         return super().form_valid(form)
+
+
+class ArtzProductUSView(ListView):
+    model = ArtzProductUS
+    template_name = "artzproductus_list.html"
+    queryset = ArtzProductUS.objects.all()
+
+
+class ShipmentView(ListView):
+    model = Shipment
+    template_name = "shipment_lsit.html"
+    queryset = Shipment.objects.all().order_by('-shipment_status')
+
+
+class ShipmentCreateView(CreateView):
+    model = Shipment
+    form_class = ShipmentCreateForm
+    template_name = 'shipment_create.html'
 
     def get_success_url(self):
-        return reverse('video')
+        return reverse('shipment')
 
-    # def get_video_information_api(self):
-    #     api_key = 'AIzaSyCWuZ5enVn4ga0G8s_F5LlTY9OkKCnd6tM'
 
-    def form_valid(self, form):
+class ShipmentUpdateView(UpdateView):
+    model = Shipment
+    form_class = ShipmentCreateForm
+    template_name = 'shipment_update.html'
 
-        """If the form is valid, save the associated model."""
-        new_video = form.save(commit=False)
-        video_id = new_video.video_id
-        print(len(video_id))
-        if len(video_id) > 11:
-            video_id = re.sub(r'https://www\.youtube\.com/watch\?v=', '', video_id)
-
-        print(video_id)
-        api_key = settings.API_KEY
-        youtube = build('youtube', 'v3', developerKey=api_key)
-        request = youtube.videos().list(
-            part="statistics, snippet",
-            id=video_id
-        )
-        response = request.execute()
-        print(response)
-        title = response['items'][0]['snippet']['title']
-        publishedAt = response['items'][0]['snippet']['publishedAt']
-        channelId = response['items'][0]['snippet']['channelId']
-        channelTitle = response['items'][0]['snippet']['channelTitle']
-        print(title)
-        print(publishedAt)
-        print(channelId)
-        print( channelTitle)
-        new_video.views_count = response['items'][0]['statistics']['viewCount']
-        new_video.likes_count = response['items'][0]['statistics']['likeCount']
-        new_video.dislikes_count = response['items'][0]['statistics']['dislikeCount']
-        new_video.comments_count = response['items'][0]['statistics']['commentCount']
-        new_video.save()
-
-        return super().form_valid(form)
+    def get_success_url(self):
+        return reverse('shipment')

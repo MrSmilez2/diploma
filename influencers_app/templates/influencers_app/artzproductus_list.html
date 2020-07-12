@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content%}
+<table class="table table-bordered table-dark">
+  <thead>
+    <tr>
+      <th scope="col">SKU</th>
+      <th scope="col">Product name</th>
+      <th scope="col">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for product in object_list %}
+    <tr>
+        <th scope="row">{{ product.sku }}</th>
+        <th scope="row">{{ product.product_name }}</th>
+        <th scope="row">{{ product.product_price }}</th>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+{% endblock content%}

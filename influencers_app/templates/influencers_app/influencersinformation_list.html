@@ -26,25 +26,26 @@
     <tr>
         <th scope="row">{{ detail.channel_name.responsible }}</th>
       <th scope="row"><a href="{{ detail.channel_name.channels_url }}">{{ detail.channel_name }}</a></th>
-<!--      <th scope="row">{{ detail.channel_name.channels_url }}</th>-->
       <th scope="row">{{ detail.channel_name.email }}</th>
       <td>{{ detail.location }}</td>
-      {% if detail.progress == 'RD'%}
+      {% if detail.progress == '1RD'%}
         <td class="rew_done">Review Done</td>
-      {% elif detail.progress == 'AR'%}
-      <td>Awaiting Reviewe</td>
-      {% elif detail.progress == 'PS'%}
+      {% elif detail.progress == '2AR'%}
+      <td class="aw_rew">Awaiting Reviewe</td>
+      {% elif detail.progress == '3PS'%}
       <td>Product Sent</td>
-      {% elif detail.progress == 'CM'%}
+      {% elif detail.progress == '4CM'%}
       <td>Communicating</td>
-      {% elif detail.progress == 'OD'%}
+      {% elif detail.progress == '5OD'%}
       <td>Offer Declined</td>
-      {% elif detail.progress == 'RJ'%}
+      {% elif detail.progress == '6RJ'%}
       <td>Rejection</td>
-      {% elif detail.progress == 'ES'%}
+      {% elif detail.progress == '7ES'%}
       <td>Email Inauiry Sent</td>
-      {% elif detail.progress == 'OH'%}
+      {% elif detail.progress == '8OH'%}
       <td>On Hold</td>
+      {% elif detail.progress == '9DV'%}
+      <td>Send your first message</td>
       {% endif %}
       <td>{{ detail.subscribers }}</td>
       <td>{{ detail.date_of_last_email }}</td>
@@ -53,6 +54,7 @@
       <td>{{ detail.permission_for_ads }}</td>
       <td>{{ detail.notes }}</td>
       <td>{{ detail.website }}</td>
+      <td><a href="{% url 'details_update' pk=detail.id %}"> Update </a></td>
     </tr>
   {% endfor %}
 

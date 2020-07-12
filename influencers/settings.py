@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'influencers_app',
     'debug_toolbar',
+    'django_select2',
 
 ]
 
@@ -131,7 +132,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-API_KEY = 'AIzaSyCWuZ5enVn4ga0G8s_F5LlTY9OkKCnd6tM'
+
+API_KEY = os.getenv('API_KEY')
 
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
@@ -142,3 +144,17 @@ SITE_ID = 1
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/2'
+
+CACHES = {
+    # … default cache config and others
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# Tell select2 which cache configuration to use:
+SELECT2_CACHE_BACKEND = "default"

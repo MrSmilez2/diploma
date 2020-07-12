@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<table class="table table-bordered table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Channel name</th>
+      <th scope="col">Shipment status</th>
+      <th scope="col">Products</th>
+      <th scope="col">Created at</th>
+      <th scope="col">Shioment date</th>
+      <th scope="col">Order number</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in object_list %}
+    <tr>
+      <th scope="row"><a href="{%url 'shipment'%}?influencer={{item.channel_name}}">{{ item.channel_name }}</a></th>
+      {% if item.shipment_status == 'Shipped'%}
+        <th class="shipped_order" scope="row">{{ item.shipment_status }}</th>
+      {% elif item.shipment_status == 'Need to be shipped'%}
+        <th class="not_shipped_order" scope="row">{{ item.shipment_status }}</th>
+      {% endif %}
+      <th scope="row">
+          {% for i in item.product.all %}
+            <p>{{i.sku}}</p>
+          {% endfor %}
+      </th>
+      <th scope="row">{{ item.created_at }}</th>
+      <td >{{ item.updated_at }}</td>
+      {% if item.order_number == None%}
+         <td>Waiting to get its order number</td>
+      {% else %}
+        <td >{{ item.order_number }}</td>
+      {% endif %}
+      <td><a href="{% url 'shipment_update' pk=item.id %}"> Update </a></td>
+    </tr>
+
+  {% endfor %}
+<div class="col-4">
+  <a href="{% url 'shipment_create' %}"><button type="button" class="btn btn-primary mb-2" value="submit">Create New Shipment</button></a>
+</div>
+{% endblock content%}
