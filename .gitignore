@@ -1,0 +1,8 @@
+__pycache__/
+.coverage
+.coverage.*
+*.log
+.venv
+env/
+venv/
+ENV/

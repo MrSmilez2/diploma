@@ -8,16 +8,16 @@
       <th scope="col">video_name</th>
       <th scope="col">video_url</th>
       <th scope="col">date_of_publication</th>
-        <th scope="col">number_of_views</th>
-        <th scope="col">number_of_comments</th>
-        <th scope="col">number_of_likes</th>
-        <th scope="col">number_of_dislikes</th>
+      <th scope="col">number_of_views</th>
+      <th scope="col">number_of_comments</th>
+      <th scope="col">number_of_likes</th>
+      <th scope="col">number_of_dislikes</th>
     </tr>
   </thead>
   <tbody>
   {% for video in videos %}
     <tr>
-        <th scope="row"><a href="{%url 'content'%}?influencer='{{video.channel_name}}'">{{ video.channel_name }}</a></th>
+      <th scope="row"><a href="{%url 'content'%}?influencer={{video.channel_name}}">{{ video.channel_name }}</a></th>
       <th scope="row">{{ video.video_name }}</th>
       <th scope="row"><a href="{{ video.video_url }}">{{ video.video_url }}</a></th>
       <th scope="row">{{ video.date_of_publication }}</th>
@@ -28,7 +28,7 @@
     </tr>
   {% endfor %}
   <tr>
-        <th scope="row"></th>
+      <th scope="row"></th>
       <th scope="row"></th>
       <th scope="row"></th>
       <th scope="row">Total:</th>
@@ -36,5 +36,8 @@
       <td>{{ sum_comments }}</td>
       <td>{{ sum_likes }}</td>
       <td>{{ sum_dislikes }}</td>
-    </tr>
+  </tr>
+  <div class="col-4">
+      <a href="{% url 'video_create' %}"><button type="button" class="btn btn-primary mb-2" value="submit">Add New Video</button></a>
+  </div>
 {% endblock content %}

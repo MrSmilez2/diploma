@@ -1,0 +1,24 @@
+{% extends 'base.html'%}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Create a new shipment</title>
+    {{ form.media.css }}
+    <style>
+        input, select {width: 20%}
+    </style>
+</head>
+<body>
+    <h1>Create a new shipment</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit">
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {{ form.media.js }}
+</body>
+</html>
+{% endblock content %}

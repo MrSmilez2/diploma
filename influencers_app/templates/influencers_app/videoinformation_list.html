@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<table class="table table-bordered table-dark">
+  <thead>
+    <tr>
+      <th scope="col">video_id</th>
+      <th scope="col">views_count</th>
+      <th scope="col">comments_count </th>
+      <th scope="col">likes_count</th>
+        <th scope="col">dislikes_count</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for video in object_list %}
+    <tr>
+      <th scope="row">{{ video.video_id }}</th>
+      <td>{{ video.views_count }}</td>
+      <td>{{ video.comments_count }}</td>
+      <td>{{ video.likes_count }}</td>
+      <td>{{video.dislikes_count }}</td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+<div class="col-4">
+
+  <a href="{% url 'video_create' %}"><button type="button" class="btn btn-primary mb-2" value="submit">Add New Video</button></a>
+</div>
+{% endblock content %}

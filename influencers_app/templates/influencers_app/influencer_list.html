@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<table class="table table-bordered table-dark">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Channel_name</th>
+      <th scope="col">URL</th>
+      <th scope="col">EMAIL</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for influencer in object_list %}
+    <tr>
+      <th scope="row">{{ influencer.id }}</th>
+      <td>{{ influencer.name }}</td>
+      <td>{{ influencer.channels_url }}</td>
+      <td>{{ influencer.email }}</td>
+      <td>{{ influencer.responsible }}</td>
+      <td><a href="{% url 'influencer_update' slug=influencer.slug %}"> Change </a></td>
+    </tr>
+  {% endfor %}
+
+  </tbody>
+</table>
+<div class="col-4">
+  <a href="{% url 'influencer_create' %}"><button type="button" class="btn btn-primary mb-2" value="submit">Create New Influencer</button></a>
+</div>
+{% endblock content %}

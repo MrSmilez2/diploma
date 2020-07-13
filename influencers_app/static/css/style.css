@@ -1,0 +1,12 @@
+.aw_rew {
+    background-color: blue;
+}
+.rew_done {
+    background-color: green;
+}
+.shipped_order {
+    background-color: green;
+}
+.not_shipped_order {
+    background-color: red;
+}
