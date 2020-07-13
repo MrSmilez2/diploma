@@ -4,7 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django_select2 import forms as s2forms
 
 from .models import Influencer, VideoInformation, Content, \
-    InfluencersInformation, Shipment, Book
+    InfluencersInformation, Shipment
 
 
 class InfluencerForm(forms.ModelForm):
@@ -67,6 +67,7 @@ class ProductWidget(s2forms.ModelSelect2MultipleWidget):
         "product_name__icontains",
     ]
 
+
 class ShipmentCreateForm(forms.ModelForm):
     class Meta:
         model = Shipment
@@ -75,14 +76,10 @@ class ShipmentCreateForm(forms.ModelForm):
             "product": ProductWidget,
         }
 
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'table table-bordered '
-
-
-
 
 
 class VideoInformationForm(forms.ModelForm):
@@ -90,8 +87,3 @@ class VideoInformationForm(forms.ModelForm):
         model = VideoInformation
         fields = ('video_id', 'views_count', 'comments_count', 'likes_count',
                   'dislikes_count')
-
-
-
-
-
