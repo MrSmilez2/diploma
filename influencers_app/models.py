@@ -92,7 +92,8 @@ class Content(models.Model):
         on_delete=models.CASCADE,
         blank=True
     )
-    video_name = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    video_name = models.CharField(max_length=100, unique=True, null=True,
+                                  blank=True)
     video_url = models.CharField(max_length=100, unique=True, null=True)
     date_of_publication = models.DateField(blank=True)
     number_of_views = models.IntegerField(null=True, blank=True)
@@ -145,17 +146,18 @@ class Shipment(models.Model):
 
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
-    order_number = models.CharField(max_length=10, unique=True, null=True, blank=True)
+    order_number = models.CharField(max_length=10, unique=True, null=True,
+                                    blank=True)
 
     def __str__(self):
         return '{}, {}'.format(self.channel_name, self.created_at)
 
 
 class Book(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    co_authors = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='co_authored_by')
-
-
+    author = models.ForeignKey(settings.AUTH_USER_MODEL,
+                               on_delete=models.CASCADE)
+    co_authors = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                        related_name='co_authored_by')
 
 
 def pre_save_influencer_receiver(sender, instance, *args, **kwargs):

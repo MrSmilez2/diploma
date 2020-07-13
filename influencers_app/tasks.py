@@ -11,8 +11,6 @@ import re
 import time
 
 
-
-
 @shared_task
 def test_task():
     time.sleep(5)

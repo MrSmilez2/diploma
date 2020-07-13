@@ -10,10 +10,6 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 import re
 from googleapiclient.discovery import build
-from django.views import generic
-
-from . import forms, models
-
 
 from .models import Influencer, Content, InfluencersInformation, \
     VideoInformation, ArtzProductUS, Shipment
@@ -100,11 +96,13 @@ class InfluencersInformationView(LoginRequiredMixin, ListView):
         return templates
 
     def get_queryset(self):
-        details = InfluencersInformation.objects.select_related('channel_name').order_by('progress')
+        details = InfluencersInformation.objects.select_related(
+            'channel_name').order_by('progress')
         influencers_name_search = self.request.GET.get(
             'influencers_name_search')
         if influencers_name_search:
-            details = details.filter(channel_name__name__icontains=influencers_name_search)
+            details = details.filter(
+                channel_name__name__icontains=influencers_name_search)
         print(details)
         responsible = self.request.GET.get('responsible')
         if responsible:
@@ -192,7 +190,6 @@ class ContentCreateView(CreateView):
     def get_success_url(self):
         return reverse('content')
 
-
     def form_valid(self, form):
 
         """If the form is valid, save the associated model."""
@@ -200,8 +197,8 @@ class ContentCreateView(CreateView):
         video_url = new_video.video_url
         print(len(video_url))
         if len(video_url) > 11:
-            video_url = re.sub(r'https://www\.youtube\.com/watch\?v=', '', video_url)
-
+            video_url = re.sub(r'https://www\.youtube\.com/watch\?v=', '',
+                               video_url)
         print(video_url)
         api_key = settings.API_KEY
         youtube = build('youtube', 'v3', developerKey=api_key)
@@ -213,22 +210,22 @@ class ContentCreateView(CreateView):
         print(response)
         channelTitle = response['items'][0]['snippet']['channelTitle']
         channelId = response['items'][0]['snippet']['channelId']
-        new_video.channel_name = Influencer.objects.get_or_create(name=channelTitle, channels_url=channelId)[0]
+        new_video.channel_name = Influencer.objects.get_or_create(
+            name=channelTitle, channels_url=channelId)[0]
         new_video.video_name = response['items'][0]['snippet']['title']
-        new_video.date_of_publication = response['items'][0]['snippet']['publishedAt'][0:10]
-        print(new_video.video_name)
-        print(new_video.date_of_publication)
-        print(channelId)
-        print( channelTitle)
-        new_video.number_of_views = response['items'][0]['statistics']['viewCount']
-        new_video.number_of_likes = response['items'][0]['statistics']['likeCount']
-        new_video.number_of_dislikes = response['items'][0]['statistics']['dislikeCount']
-        new_video.number_of_comments = response['items'][0]['statistics']['commentCount']
+        new_video.date_of_publication = response['items'][0]['snippet'][
+                                            'publishedAt'][0:10]
+        new_video.number_of_views = response['items'][0]['statistics'][
+            'viewCount']
+        new_video.number_of_likes = response['items'][0]['statistics'][
+            'likeCount']
+        new_video.number_of_dislikes = response['items'][0]['statistics'][
+            'dislikeCount']
+        new_video.number_of_comments = response['items'][0]['statistics'][
+            'commentCount']
         new_video.save()
 
         return super().form_valid(form)
-
-
 
 
 class ChartView(LoginRequiredMixin, TemplateView):
@@ -289,7 +286,8 @@ class VideoInformationView(ListView):
 #         video_id = new_video.video_id
 #         print(len(video_id))
 #         if len(video_id) > 11:
-#             video_id = re.sub(r'https://www\.youtube\.com/watch\?v=', '', video_id)
+#             video_id = re.sub(r'https://www\.youtube\.com/watch\?v=', '',
+#             video_id)
 #
 #         print(video_id)
 #         api_key = settings.API_KEY
@@ -308,10 +306,14 @@ class VideoInformationView(ListView):
 #         print(publishedAt)
 #         print(channelId)
 #         print( channelTitle)
-#         new_video.views_count = response['items'][0]['statistics']['viewCount']
-#         new_video.likes_count = response['items'][0]['statistics']['likeCount']
-#         new_video.dislikes_count = response['items'][0]['statistics']['dislikeCount']
-#         new_video.comments_count = response['items'][0]['statistics']['commentCount']
+#         new_video.views_count = response['items'][0]['statistics'][
+#         'viewCount']
+#         new_video.likes_count = response['items'][0]['statistics'][
+#         'likeCount']
+#         new_video.dislikes_count = response['items'][0]['statistics'][
+#         'dislikeCount']
+#         new_video.comments_count = response['items'][0]['statistics'][
+#         'commentCount']
 #         new_video.save()
 #         return super().form_valid(form)
 
@@ -324,7 +326,7 @@ class ArtzProductUSView(ListView):
 
 class ShipmentView(ListView):
     model = Shipment
-    template_name = "shipment_lsit.html"
+    template_name = "shipment_list.html"
     queryset = Shipment.objects.all().order_by('-shipment_status')
 
 
