@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'influencers_app',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'django_select2',
 
 ]
