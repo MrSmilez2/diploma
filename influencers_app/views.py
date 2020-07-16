@@ -200,7 +200,7 @@ class ContentCreateView(CreateView):
             video_url = re.sub(r'https://www\.youtube\.com/watch\?v=', '',
                                video_url)
         print(video_url)
-        api_key = settings.API_KEY
+        api_key = settings.GOOGLE_APPLICATION_CREDENTIALS
         youtube = build('youtube', 'v3', developerKey=api_key)
         request = youtube.videos().list(
             part="statistics, snippet",
