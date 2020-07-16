@@ -133,7 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 
-GOOGLE_APPLICATION_CREDENTIALS = os.getenv('API_KEY')
+API_KEY = os.getenv('API_KEY')
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
