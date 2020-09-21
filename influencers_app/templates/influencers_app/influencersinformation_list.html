@@ -2,8 +2,10 @@
 
 {% block content%}
 <a href="{% url  'details' %}"><button class="btn btn-dark">All</button></a>
-<a href="{% url  'details' %}?responsible=2"><button class="btn btn-info">Maks</button></a>
-<a href="{% url  'details' %}?responsible=3"><button class="btn btn-info">Anna</button></a>
+{% for user in users %}
+  <a href="{% url  'details' %}?responsible={{ user.id }}"><button class="btn btn-info">{{ user.username }}</button></a>
+{% endfor %}
+
 <table class="table table-bordered table-dark">
   <thead>
     <tr>
