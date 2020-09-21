@@ -5,7 +5,7 @@ from django.db.models.signals import pre_save
 
 from django.utils.text import slugify
 
-from influencers.influencers_app.enums import Progress
+from influencers.influencers_app.enums import ProgressType
 
 
 class Influencer(models.Model):
@@ -57,7 +57,7 @@ class InfluencersInformation(models.Model):
     subscribers = models.IntegerField(null=True, blank=True, default=None)
     progress = models.CharField(
         max_length=255,
-        choices=Progress.choices()
+        choices=ProgressType.choices()
         # default=DEFAULTVALUE
     )
     date_of_last_email = models.DateField(auto_created=True, null=True,
