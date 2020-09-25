@@ -103,7 +103,6 @@ class InfluencersInformationView(LoginRequiredMixin, ListView):
         if influencers_name_search:
             details = details.filter(
                 channel_name__name__icontains=influencers_name_search)
-        print(details)
         responsible = self.request.GET.get('responsible')
         if responsible:
             details = details.filter(channel_name__responsible=responsible)

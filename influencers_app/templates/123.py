@@ -5,8 +5,7 @@ api_key = 'AIzaSyCWuZ5enVn4ga0G8s_F5LlTY9OkKCnd6tM'
 youtube = build('youtube', 'v3', developerKey=api_key)
 request = youtube.videos().list(
     part="statistics",
-    id="C-sRWkjFmQ
-"
+    id="C-sRWkjFmQ"
 )
 
 response = request.execute()

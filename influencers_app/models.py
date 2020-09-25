@@ -4,6 +4,9 @@ from django.db import models
 from django.db.models.signals import pre_save
 
 from django.utils.text import slugify
+from enumchoicefield import EnumChoiceField
+
+from influencers_app.enums import ContentType
 
 
 class Influencer(models.Model):
@@ -74,19 +77,8 @@ class InfluencersInformation(models.Model):
 
 
 class Content(models.Model):
-    YOUTUBEVIDEO = 'YV'
-    TIKTOKVIDEO = 'TV'
-    INSTAGRAMPOST = 'IP'
-    CONTENT_CHOICES = [
-        (YOUTUBEVIDEO, 'Youtube video'),
-        (TIKTOKVIDEO, 'Tiktok video'),
-        (INSTAGRAMPOST, 'Instagram post')
-    ]
-    type_of_social_media = models.CharField(
-        max_length=2,
-        choices=CONTENT_CHOICES,
-        default=None
-    )
+
+    type_of_social_media = EnumChoiceField(ContentType, default=None)
     channel_name = models.ForeignKey(
         'Influencer',
         on_delete=models.CASCADE,
