@@ -5,8 +5,6 @@ from django.db.models.signals import pre_save
 
 from django.utils.text import slugify
 
-from influencers.influencers_app.enums import ProgressType
-
 
 class Influencer(models.Model):
     name = models.CharField(max_length=45, unique=True)
@@ -32,33 +30,33 @@ class InfluencersInformation(models.Model):
         on_delete=models.CASCADE,
         null=True
     )
-    # REVIEWDONE = '1RD'
-    # AWAITINGREVIEW = '2AR'
-    # PRODUCTSSENT = '3PS'
-    # COMMUNICATING = '4CM'
-    # OFFERDECLINED = '5OD'
-    # REJECTION = '6RJ'
-    # EMAILINQUIRYSENT = '7ES'
-    # ONHOLD = '8OH'
-    # DEFAULTVALUE = '9DV'
-    # PROGRESS_CHOICES = [
-    #     (REVIEWDONE, 'Review done'),
-    #     (AWAITINGREVIEW, 'Awaiting review'),
-    #     (PRODUCTSSENT, 'Product sent'),
-    #     (COMMUNICATING, 'Communicating'),
-    #     (OFFERDECLINED, 'Offer declined'),
-    #     (REJECTION, 'Rejection'),
-    #     (EMAILINQUIRYSENT, 'Email inquiry sent'),
-    #     (ONHOLD, 'On hold'),
-    #     (DEFAULTVALUE, 'Send your first message')
-    # ]
+    REVIEWDONE = '1RD'
+    AWAITINGREVIEW = '2AR'
+    PRODUCTSSENT = '3PS'
+    COMMUNICATING = '4CM'
+    OFFERDECLINED = '5OD'
+    REJECTION = '6RJ'
+    EMAILINQUIRYSENT = '7ES'
+    ONHOLD = '8OH'
+    DEFAULTVALUE = '9DV'
+    PROGRESS_CHOICES = [
+        (REVIEWDONE, 'Review done'),
+        (AWAITINGREVIEW, 'Awaiting review'),
+        (PRODUCTSSENT, 'Product sent'),
+        (COMMUNICATING, 'Communicating'),
+        (OFFERDECLINED, 'Offer declined'),
+        (REJECTION, 'Rejection'),
+        (EMAILINQUIRYSENT, 'Email inquiry sent'),
+        (ONHOLD, 'On hold'),
+        (DEFAULTVALUE, 'Send your first message')
+    ]
     location = models.CharField(max_length=20, null=True, blank=True,
                                 default=None)
     subscribers = models.IntegerField(null=True, blank=True, default=None)
     progress = models.CharField(
         max_length=255,
-        choices=ProgressType.choices()
-        # default=DEFAULTVALUE
+        choices=PROGRESS_CHOICES,
+        default=DEFAULTVALUE
     )
     date_of_last_email = models.DateField(auto_created=True, null=True,
                                           blank=True, default=None)
