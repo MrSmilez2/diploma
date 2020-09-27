@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'influencers_app',
-    'debug_toolbar',
+    # 'debug_toolbar',
     'django_select2',
 
 ]
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'influencers.urls'
@@ -134,9 +134,9 @@ USE_TZ = True
 
 
 API_KEY = os.getenv('API_KEY')
-
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
 PAGE_SIZE = 10
 
@@ -158,3 +158,9 @@ CACHES = {
 
 # Tell select2 which cache configuration to use:
 SELECT2_CACHE_BACKEND = "default"
+
+try:
+    import django_heroku
+    django_heroku.settings(locals())
+except ImportError:
+    pass

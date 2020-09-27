@@ -54,7 +54,7 @@ class InfluencersInformation(models.Model):
                                 default=None)
     subscribers = models.IntegerField(null=True, blank=True, default=None)
     progress = models.CharField(
-        max_length=3,
+        max_length=255,
         choices=PROGRESS_CHOICES,
         default=DEFAULTVALUE
     )
