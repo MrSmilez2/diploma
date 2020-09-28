@@ -52,7 +52,9 @@ class InfluencerView(InfluencersNameSearchMixin, ListView, LoginRequiredMixin):
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
+        total = Influencer.objects.aggregate(Count('id'))
         context['responsibles'] = self.responsibles
+        context['total'] = total['id__count']
         return context
 
 
@@ -110,8 +112,10 @@ class InfluencersInformationView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, object_list=None, **kwargs):
         details = self.get_queryset
+        users = User.objects.all()
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['details'] = details
+        context['users'] = users
         return context
 
 
