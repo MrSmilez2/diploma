@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0001_initial'),
+        ("influencers_app", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='content',
-            name='type_of_social_media',
-            field=models.CharField(choices=[('YV', 'Youtube video'), ('TV', 'Tiktok video'), ('IP', 'Instagram post')], default=None, max_length=2),
+            model_name="content",
+            name="type_of_social_media",
+            field=models.CharField(
+                choices=[
+                    ("YV", "Youtube video"),
+                    ("TV", "Tiktok video"),
+                    ("IP", "Instagram post"),
+                ],
+                default=None,
+                max_length=2,
+            ),
         ),
     ]

@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0008_auto_20200510_2025'),
+        ("influencers_app", "0008_auto_20200510_2025"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='influencer',
-            name='slug',
+            model_name="influencer",
+            name="slug",
             field=models.SlugField(blank=True, null=True, unique=True),
         ),
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='website',
+            model_name="influencersinformation",
+            name="website",
             field=models.CharField(max_length=45, null=True, unique=True),
         ),
     ]
