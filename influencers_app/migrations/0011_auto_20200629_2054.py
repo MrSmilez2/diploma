@@ -7,28 +7,32 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0010_auto_20200616_1916'),
+        ("influencers_app", "0010_auto_20200616_1916"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='content',
-            name='channel_name',
-            field=models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, to='influencers_app.Influencer'),
+            model_name="content",
+            name="channel_name",
+            field=models.ForeignKey(
+                blank=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="influencers_app.Influencer",
+            ),
         ),
         migrations.AlterField(
-            model_name='content',
-            name='date_of_publication',
+            model_name="content",
+            name="date_of_publication",
             field=models.DateField(blank=True),
         ),
         migrations.AlterField(
-            model_name='content',
-            name='video_name',
+            model_name="content",
+            name="video_name",
             field=models.CharField(blank=True, max_length=100, null=True, unique=True),
         ),
         migrations.AlterField(
-            model_name='influencer',
-            name='email',
+            model_name="influencer",
+            name="email",
             field=models.CharField(blank=True, max_length=50, null=True, unique=True),
         ),
     ]

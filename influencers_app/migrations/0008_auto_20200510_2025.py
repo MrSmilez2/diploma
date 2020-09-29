@@ -9,17 +9,24 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('influencers_app', '0007_influencersinformation_channel_name'),
+        ("influencers_app", "0007_influencersinformation_channel_name"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='influencersinformation',
-            name='responsible',
+            model_name="influencersinformation",
+            name="responsible",
         ),
         migrations.AddField(
-            model_name='influencer',
-            name='responsible',
-            field=models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='responsible', to=settings.AUTH_USER_MODEL),
+            model_name="influencer",
+            name="responsible",
+            field=models.ForeignKey(
+                blank=True,
+                default=None,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="responsible",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

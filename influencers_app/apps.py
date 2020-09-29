@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class InfluencersAppConfig(AppConfig):
-    name = 'influencers_app'
+    name = "influencers_app"

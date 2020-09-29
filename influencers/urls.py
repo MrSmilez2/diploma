@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("", include("influencers_app.urls")),
     path("select2/", include("django_select2.urls")),
 ]
