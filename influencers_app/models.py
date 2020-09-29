@@ -8,6 +8,7 @@ from django.utils.text import slugify
 
 from django.utils.translation import ugettext_lazy as _
 
+
 class Influencer(models.Model):
     name = models.CharField(max_length=45, unique=True)
     slug = models.SlugField(unique=True, null=True)
@@ -75,18 +76,15 @@ class Content(models.Model):
     video_name = models.CharField(max_length=100, unique=True, null=True, blank=True)
 
     class ContentType(TextChoices):
-        YOUTUBE_VIDEO = 'YV', _('Youtube video')
-        TIKTOK_VIDEO = 'TV', _('Tiktok video')
-        INSTAGRAM_POST = 'IP', _('Instagram post')
+        YOUTUBE_VIDEO = "YV", _("Youtube video")
+        TIKTOK_VIDEO = "TV", _("Tiktok video")
+        INSTAGRAM_POST = "IP", _("Instagram post")
 
-    type_of_social_media = models.CharField(max_length=2, choices=ContentType.choices, default=None)
-    channel_name = models.ForeignKey(
-        'Influencer',
-        on_delete=models.CASCADE,
-        blank=True
+    type_of_social_media = models.CharField(
+        max_length=2, choices=ContentType.choices, default=None
     )
-    video_name = models.CharField(max_length=100, unique=True, null=True,
-                                  blank=True)
+    channel_name = models.ForeignKey("Influencer", on_delete=models.CASCADE, blank=True)
+    video_name = models.CharField(max_length=100, unique=True, null=True, blank=True)
 
     video_url = models.CharField(max_length=100, unique=True, null=True)
     date_of_publication = models.DateField(blank=True)
