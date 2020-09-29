@@ -6,38 +6,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0013_auto_20200701_2013'),
+        ("influencers_app", "0013_auto_20200701_2013"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='notes',
+            model_name="influencersinformation",
+            name="notes",
             field=models.TextField(blank=True, default=None, null=True),
         ),
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='number_of_followups',
+            model_name="influencersinformation",
+            name="number_of_followups",
             field=models.IntegerField(blank=True, default=None, null=True),
         ),
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='permission_for_ads',
+            model_name="influencersinformation",
+            name="permission_for_ads",
             field=models.BooleanField(blank=True, default=None, null=True),
         ),
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='review_notes',
+            model_name="influencersinformation",
+            name="review_notes",
             field=models.TextField(blank=True, default=None, null=True),
         ),
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='subscribers',
+            model_name="influencersinformation",
+            name="subscribers",
             field=models.IntegerField(blank=True, default=None, null=True),
         ),
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='website',
-            field=models.CharField(blank=True, default=None, max_length=45, null=True, unique=True),
+            model_name="influencersinformation",
+            name="website",
+            field=models.CharField(
+                blank=True, default=None, max_length=45, null=True, unique=True
+            ),
         ),
     ]

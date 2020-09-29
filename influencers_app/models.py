@@ -19,8 +19,8 @@ class Influencer(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='responsible',
-        default=None
+        related_name="responsible",
+        default=None,
     )
 
     def __str__(self):
@@ -28,64 +28,52 @@ class Influencer(models.Model):
 
 
 class InfluencersInformation(models.Model):
-    channel_name = models.ForeignKey(
-        'Influencer',
-        on_delete=models.CASCADE,
-        null=True
-    )
-    REVIEWDONE = '1RD'
-    AWAITINGREVIEW = '2AR'
-    PRODUCTSSENT = '3PS'
-    COMMUNICATING = '4CM'
-    OFFERDECLINED = '5OD'
-    REJECTION = '6RJ'
-    EMAILINQUIRYSENT = '7ES'
-    ONHOLD = '8OH'
-    DEFAULTVALUE = '9DV'
+    channel_name = models.ForeignKey("Influencer", on_delete=models.CASCADE, null=True)
+    REVIEWDONE = "1RD"
+    AWAITINGREVIEW = "2AR"
+    PRODUCTSSENT = "3PS"
+    COMMUNICATING = "4CM"
+    OFFERDECLINED = "5OD"
+    REJECTION = "6RJ"
+    EMAILINQUIRYSENT = "7ES"
+    ONHOLD = "8OH"
+    DEFAULTVALUE = "9DV"
     PROGRESS_CHOICES = [
-        (REVIEWDONE, 'Review done'),
-        (AWAITINGREVIEW, 'Awaiting review'),
-        (PRODUCTSSENT, 'Product sent'),
-        (COMMUNICATING, 'Communicating'),
-        (OFFERDECLINED, 'Offer declined'),
-        (REJECTION, 'Rejection'),
-        (EMAILINQUIRYSENT, 'Email inquiry sent'),
-        (ONHOLD, 'On hold'),
-        (DEFAULTVALUE, 'Send your first message')
+        (REVIEWDONE, "Review done"),
+        (AWAITINGREVIEW, "Awaiting review"),
+        (PRODUCTSSENT, "Product sent"),
+        (COMMUNICATING, "Communicating"),
+        (OFFERDECLINED, "Offer declined"),
+        (REJECTION, "Rejection"),
+        (EMAILINQUIRYSENT, "Email inquiry sent"),
+        (ONHOLD, "On hold"),
+        (DEFAULTVALUE, "Send your first message"),
     ]
-    location = models.CharField(max_length=20, null=True, blank=True,
-                                default=None)
+    location = models.CharField(max_length=20, null=True, blank=True, default=None)
     subscribers = models.IntegerField(null=True, blank=True, default=None)
     progress = models.CharField(
-        max_length=255,
-        choices=PROGRESS_CHOICES,
-        default=DEFAULTVALUE
+        max_length=255, choices=PROGRESS_CHOICES, default=DEFAULTVALUE
     )
-    date_of_last_email = models.DateField(auto_created=True, null=True,
-                                          blank=True, default=None)
+    date_of_last_email = models.DateField(
+        auto_created=True, null=True, blank=True, default=None
+    )
     review_notes = models.TextField(null=True, blank=True, default=None)
-    number_of_followups = models.IntegerField(null=True, blank=True,
-                                              default=None)
-    permission_for_ads = models.BooleanField(null=True, blank=True,
-                                             default=None)
+    number_of_followups = models.IntegerField(null=True, blank=True, default=None)
+    permission_for_ads = models.BooleanField(null=True, blank=True, default=None)
     notes = models.TextField(null=True, blank=True, default=None)
-    website = models.CharField(max_length=45, unique=True, null=True,
-                               blank=True, default=None)
+    website = models.CharField(
+        max_length=45, unique=True, null=True, blank=True, default=None
+    )
 
     def __str__(self):
-        return f'{self.channel_name}'
+        return f"{self.channel_name}"
 
 
 class Content(models.Model):
 
     type_of_social_media = EnumChoiceField(ContentType, default=None)
-    channel_name = models.ForeignKey(
-        'Influencer',
-        on_delete=models.CASCADE,
-        blank=True
-    )
-    video_name = models.CharField(max_length=100, unique=True, null=True,
-                                  blank=True)
+    channel_name = models.ForeignKey("Influencer", on_delete=models.CASCADE, blank=True)
+    video_name = models.CharField(max_length=100, unique=True, null=True, blank=True)
     video_url = models.CharField(max_length=100, unique=True, null=True)
     date_of_publication = models.DateField(blank=True)
     number_of_views = models.IntegerField(null=True, blank=True)
@@ -94,7 +82,7 @@ class Content(models.Model):
     number_of_dislikes = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return '{}, {}'.format(self.channel_name, self.video_name)
+        return "{}, {}".format(self.channel_name, self.video_name)
 
 
 class VideoInformation(models.Model):
@@ -111,45 +99,35 @@ class ArtzProductUS(models.Model):
     product_price = models.IntegerField()
 
     def __str__(self):
-        return '{}, {}'.format(self.sku, self.product_name)
+        return "{}, {}".format(self.sku, self.product_name)
 
 
 class Shipment(models.Model):
-    channel_name = models.ForeignKey(
-        'Influencer',
-        on_delete=models.CASCADE,
-        null=True
-    )
-    NEED_TO_SHIP = 'Need to be shipped'
-    SHIPPED = 'Shipped'
+    channel_name = models.ForeignKey("Influencer", on_delete=models.CASCADE, null=True)
+    NEED_TO_SHIP = "Need to be shipped"
+    SHIPPED = "Shipped"
     SHIPMENT_STATUS = (
-        (NEED_TO_SHIP, 'Need to be shipped'),
-        (SHIPPED, 'Shipped'),
+        (NEED_TO_SHIP, "Need to be shipped"),
+        (SHIPPED, "Shipped"),
     )
     shipment_status = models.CharField(
-        max_length=18,
-        choices=SHIPMENT_STATUS,
-        default=NEED_TO_SHIP
+        max_length=18, choices=SHIPMENT_STATUS, default=NEED_TO_SHIP
     )
-    product = models.ManyToManyField(
-        'ArtzProductUS',
-        related_name='products'
-    )
+    product = models.ManyToManyField("ArtzProductUS", related_name="products")
 
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
-    order_number = models.CharField(max_length=10, unique=True, null=True,
-                                    blank=True)
+    order_number = models.CharField(max_length=10, unique=True, null=True, blank=True)
 
     def __str__(self):
-        return '{}, {}'.format(self.channel_name, self.created_at)
+        return "{}, {}".format(self.channel_name, self.created_at)
 
 
 class Book(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL,
-                               on_delete=models.CASCADE)
-    co_authors = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                        related_name='co_authored_by')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    co_authors = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="co_authored_by"
+    )
 
 
 def pre_save_influencer_receiver(sender, instance, *args, **kwargs):

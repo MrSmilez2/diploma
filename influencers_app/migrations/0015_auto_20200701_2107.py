@@ -6,13 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0014_auto_20200701_2016'),
+        ("influencers_app", "0014_auto_20200701_2016"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='progress',
-            field=models.CharField(choices=[('1RD', 'Review done'), ('2AR', 'Awaiting review'), ('PS', 'Product sent'), ('CM', 'Communicating'), ('OD', 'Offer declined'), ('RJ', 'Rejection'), ('ES', 'Email inquiry sent'), ('OH', 'On hold'), ('DV', 'Send your first message')], default='DV', max_length=3),
+            model_name="influencersinformation",
+            name="progress",
+            field=models.CharField(
+                choices=[
+                    ("1RD", "Review done"),
+                    ("2AR", "Awaiting review"),
+                    ("PS", "Product sent"),
+                    ("CM", "Communicating"),
+                    ("OD", "Offer declined"),
+                    ("RJ", "Rejection"),
+                    ("ES", "Email inquiry sent"),
+                    ("OH", "On hold"),
+                    ("DV", "Send your first message"),
+                ],
+                default="DV",
+                max_length=3,
+            ),
         ),
     ]
