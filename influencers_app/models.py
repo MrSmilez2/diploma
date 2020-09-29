@@ -1,13 +1,12 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import TextChoices
 from django.db.models.signals import pre_save
 
 from django.utils.text import slugify
-from enumchoicefield import EnumChoiceField
 
-from influencers_app.enums import ContentType
-
+from django.utils.translation import ugettext_lazy as _
 
 class Influencer(models.Model):
     name = models.CharField(max_length=45, unique=True)
@@ -74,6 +73,21 @@ class Content(models.Model):
     type_of_social_media = EnumChoiceField(ContentType, default=None)
     channel_name = models.ForeignKey("Influencer", on_delete=models.CASCADE, blank=True)
     video_name = models.CharField(max_length=100, unique=True, null=True, blank=True)
+
+    class ContentType(TextChoices):
+        YOUTUBE_VIDEO = 'YV', _('Youtube video')
+        TIKTOK_VIDEO = 'TV', _('Tiktok video')
+        INSTAGRAM_POST = 'IP', _('Instagram post')
+
+    type_of_social_media = models.CharField(max_length=2, choices=ContentType.choices, default=None)
+    channel_name = models.ForeignKey(
+        'Influencer',
+        on_delete=models.CASCADE,
+        blank=True
+    )
+    video_name = models.CharField(max_length=100, unique=True, null=True,
+                                  blank=True)
+
     video_url = models.CharField(max_length=100, unique=True, null=True)
     date_of_publication = models.DateField(blank=True)
     number_of_views = models.IntegerField(null=True, blank=True)
