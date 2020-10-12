@@ -52,7 +52,7 @@ class InfluencersNameSearchMixin:
         return queryset
 
 
-class InfluencerView(InfluencersNameSearchMixin, ListView, LoginRequiredMixin):
+class InfluencerView(InfluencersNameSearchMixin, LoginRequiredMixin, ListView):
     model = Influencer
     login_url = "login_page"
     # paginate_by = settings.PAGE_SIZE
@@ -69,8 +69,9 @@ class InfluencerView(InfluencersNameSearchMixin, ListView, LoginRequiredMixin):
         return context
 
 
-class InfluencerCreateView(CreateView):
+class InfluencerCreateView(LoginRequiredMixin, CreateView):
     model = Influencer
+    login_url = "login_page"
     form_class = InfluencerForm
     template_name = "influencer_create.html"
     queryset = Influencer.objects.all()
@@ -229,6 +230,7 @@ class ContentCreateView(CreateView):
         new_video.channel_name = Influencer.objects.get_or_create(
             name=channelTitle, channels_url=channelId
         )[0]
+        print()
         new_video.video_name = response["items"][0]["snippet"]["title"]
         new_video.date_of_publication = response["items"][0]["snippet"]["publishedAt"][
             0:10
@@ -344,10 +346,11 @@ class ArtzProductUSView(ListView):
     queryset = ArtzProductUS.objects.all()
 
 
-class ShipmentView(ListView):
+class ShipmentView(LoginRequiredMixin, ListView):
     model = Shipment
     template_name = "shipment_list.html"
     queryset = Shipment.objects.all().order_by("-shipment_status")
+    login_url = "login_page"
 
 
 class ShipmentCreateView(CreateView):
