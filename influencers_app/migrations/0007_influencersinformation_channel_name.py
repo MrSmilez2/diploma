@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0006_auto_20200510_1830'),
+        ("influencers_app", "0006_auto_20200510_1830"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='influencersinformation',
-            name='channel_name',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='influencers_app.Influencer'),
+            model_name="influencersinformation",
+            name="channel_name",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="influencers_app.Influencer",
+            ),
         ),
     ]

@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from influencers_app.models import Influencer, Content, InfluencersInformation, VideoInformation, ArtzProductUS, Shipment, Book
+from influencers_app.models import (
+    Influencer,
+    Content,
+    InfluencersInformation,
+    VideoInformation,
+    ArtzProductUS,
+    Shipment,
+    Book,
+)
 
 
 admin.site.register(Influencer)

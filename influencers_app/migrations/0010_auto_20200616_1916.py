@@ -6,24 +6,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0009_auto_20200516_1758'),
+        ("influencers_app", "0009_auto_20200516_1758"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='VideoInformation',
+            name="VideoInformation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('video_id', models.CharField(max_length=100, unique=True)),
-                ('views_count', models.IntegerField(blank=True, null=True)),
-                ('comments_count', models.IntegerField(blank=True, null=True)),
-                ('likes_count', models.IntegerField(blank=True, null=True)),
-                ('dislikes_count', models.IntegerField(blank=True, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("video_id", models.CharField(max_length=100, unique=True)),
+                ("views_count", models.IntegerField(blank=True, null=True)),
+                ("comments_count", models.IntegerField(blank=True, null=True)),
+                ("likes_count", models.IntegerField(blank=True, null=True)),
+                ("dislikes_count", models.IntegerField(blank=True, null=True)),
             ],
         ),
         migrations.AlterField(
-            model_name='influencer',
-            name='slug',
+            model_name="influencer",
+            name="slug",
             field=models.SlugField(null=True, unique=True),
         ),
     ]

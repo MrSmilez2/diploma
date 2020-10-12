@@ -9,64 +9,100 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('influencers_app', '0005_auto_20200506_2052'),
+        ("influencers_app", "0005_auto_20200506_2052"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='influencer',
-            name='date_of_last_email',
+            model_name="influencer",
+            name="date_of_last_email",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='location',
+            model_name="influencer",
+            name="location",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='notes',
+            model_name="influencer",
+            name="notes",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='number_of_followups',
+            model_name="influencer",
+            name="number_of_followups",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='permission_for_ads',
+            model_name="influencer",
+            name="permission_for_ads",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='progress',
+            model_name="influencer",
+            name="progress",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='responsible',
+            model_name="influencer",
+            name="responsible",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='review_notes',
+            model_name="influencer",
+            name="review_notes",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='subscribers',
+            model_name="influencer",
+            name="subscribers",
         ),
         migrations.RemoveField(
-            model_name='influencer',
-            name='website',
+            model_name="influencer",
+            name="website",
         ),
         migrations.CreateModel(
-            name='InfluencersInformation',
+            name="InfluencersInformation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_of_last_email', models.DateField(auto_created=True, blank=True, null=True)),
-                ('location', models.CharField(max_length=20)),
-                ('subscribers', models.IntegerField()),
-                ('progress', models.CharField(choices=[('RD', 'Review done'), ('AR', 'Awaiting review'), ('PS', 'Product sent'), ('CM', 'Communicating'), ('OD', 'Offer declined'), ('RJ', 'Rejection'), ('ES', 'Email inquiry sent'), ('OH', 'On hold')], default='ES', max_length=2)),
-                ('review_notes', models.TextField()),
-                ('number_of_followups', models.IntegerField()),
-                ('permission_for_ads', models.BooleanField()),
-                ('notes', models.TextField()),
-                ('website', models.CharField(max_length=45, unique=True)),
-                ('responsible', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='responsible', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date_of_last_email",
+                    models.DateField(auto_created=True, blank=True, null=True),
+                ),
+                ("location", models.CharField(max_length=20)),
+                ("subscribers", models.IntegerField()),
+                (
+                    "progress",
+                    models.CharField(
+                        choices=[
+                            ("RD", "Review done"),
+                            ("AR", "Awaiting review"),
+                            ("PS", "Product sent"),
+                            ("CM", "Communicating"),
+                            ("OD", "Offer declined"),
+                            ("RJ", "Rejection"),
+                            ("ES", "Email inquiry sent"),
+                            ("OH", "On hold"),
+                        ],
+                        default="ES",
+                        max_length=2,
+                    ),
+                ),
+                ("review_notes", models.TextField()),
+                ("number_of_followups", models.IntegerField()),
+                ("permission_for_ads", models.BooleanField()),
+                ("notes", models.TextField()),
+                ("website", models.CharField(max_length=45, unique=True)),
+                (
+                    "responsible",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="responsible",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
