@@ -6,18 +6,40 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0020_content_types'),
+        ("influencers_app", "0020_content_types"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='content',
-            name='type_of_social_media',
-            field=models.CharField(choices=[('YV', 'Youtube video'), ('TV', 'Tiktok video'), ('IP', 'Instagram post')], default=None, max_length=2),
+            model_name="content",
+            name="type_of_social_media",
+            field=models.CharField(
+                choices=[
+                    ("YV", "Youtube video"),
+                    ("TV", "Tiktok video"),
+                    ("IP", "Instagram post"),
+                ],
+                default=None,
+                max_length=2,
+            ),
         ),
         migrations.AlterField(
-            model_name='influencersinformation',
-            name='progress',
-            field=models.CharField(choices=[('1RD', 'Review done'), ('2AR', 'Awaiting review'), ('3PS', 'Product sent'), ('4CM', 'Communicating'), ('5OD', 'Offer declined'), ('6RJ', 'Rejection'), ('7ES', 'Email inquiry sent'), ('8OH', 'On hold'), ('9DV', 'Send your first message')], default='9DV', max_length=255),
+            model_name="influencersinformation",
+            name="progress",
+            field=models.CharField(
+                choices=[
+                    ("1RD", "Review done"),
+                    ("2AR", "Awaiting review"),
+                    ("3PS", "Product sent"),
+                    ("4CM", "Communicating"),
+                    ("5OD", "Offer declined"),
+                    ("6RJ", "Rejection"),
+                    ("7ES", "Email inquiry sent"),
+                    ("8OH", "On hold"),
+                    ("9DV", "Send your first message"),
+                ],
+                default="9DV",
+                max_length=255,
+            ),
         ),
     ]
