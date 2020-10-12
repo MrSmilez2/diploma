@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('influencers_app', '0021_auto_20200929_0644'),
+        ("influencers_app", "0021_auto_20200929_0644"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='content',
-            old_name='type_of_social_media',
-            new_name='type_of_social_media1',
+            model_name="content",
+            old_name="type_of_social_media",
+            new_name="type_of_social_media1",
         ),
     ]

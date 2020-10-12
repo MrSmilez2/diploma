@@ -8,6 +8,7 @@ from django.utils.text import slugify
 
 from django.utils.translation import ugettext_lazy as _
 
+
 class Influencer(models.Model):
     name = models.CharField(max_length=45, unique=True)
     slug = models.SlugField(unique=True, null=True)
@@ -28,31 +29,25 @@ class Influencer(models.Model):
 
 class InfluencersInformation(models.Model):
     channel_name = models.ForeignKey("Influencer", on_delete=models.CASCADE, null=True)
-    REVIEWDONE = "1RD"
-    AWAITINGREVIEW = "2AR"
-    PRODUCTSSENT = "3PS"
-    COMMUNICATING = "4CM"
-    OFFERDECLINED = "5OD"
-    REJECTION = "6RJ"
-    EMAILINQUIRYSENT = "7ES"
-    ONHOLD = "8OH"
-    DEFAULTVALUE = "9DV"
-    PROGRESS_CHOICES = [
-        (REVIEWDONE, "Review done"),
-        (AWAITINGREVIEW, "Awaiting review"),
-        (PRODUCTSSENT, "Product sent"),
-        (COMMUNICATING, "Communicating"),
-        (OFFERDECLINED, "Offer declined"),
-        (REJECTION, "Rejection"),
-        (EMAILINQUIRYSENT, "Email inquiry sent"),
-        (ONHOLD, "On hold"),
-        (DEFAULTVALUE, "Send your first message"),
-    ]
+
+    class ProgressType(TextChoices):
+        REVIEWDONE = "1RD", _("Review done")
+        AWAITINGREVIEW = "2AR", _("Awaiting review")
+        PRODUCTSSENT = "3PS", _("Product sent")
+        COMMUNICATING = "4CM", _("Communicating")
+        OFFERDECLINED = "5OD", _("Offer declined")
+        REJECTION = "6RJ", _("Rejection")
+        EMAILINQUIRYSENT = "7ES", _("Email inquiry sent")
+        ONHOLD = "8OH", _("On hold")
+        DEFAULTVALUE = "9DV", _("Send your first message")
+
+    progress = models.CharField(
+        max_length=3,
+        choices=ProgressType.choices,
+        default=ProgressType.DEFAULTVALUE,
+    )
     location = models.CharField(max_length=20, null=True, blank=True, default=None)
     subscribers = models.IntegerField(null=True, blank=True, default=None)
-    progress = models.CharField(
-        max_length=255, choices=PROGRESS_CHOICES, default=DEFAULTVALUE
-    )
     date_of_last_email = models.DateField(
         auto_created=True, null=True, blank=True, default=None
     )
@@ -69,24 +64,16 @@ class InfluencersInformation(models.Model):
 
 
 class Content(models.Model):
+    class ContentType(TextChoices):
+        YOUTUBE_VIDEO = "YV", _("Youtube video")
+        TIKTOK_VIDEO = "TV", _("Tiktok video")
+        INSTAGRAM_POST = "IP", _("Instagram post")
 
-    type_of_social_media = EnumChoiceField(ContentType, default=None)
+    type_of_social_media = models.CharField(
+        max_length=2, choices=ContentType.choices, default=None
+    )
     channel_name = models.ForeignKey("Influencer", on_delete=models.CASCADE, blank=True)
     video_name = models.CharField(max_length=100, unique=True, null=True, blank=True)
-
-    class ContentType(TextChoices):
-        YOUTUBE_VIDEO = 'YV', _('Youtube video')
-        TIKTOK_VIDEO = 'TV', _('Tiktok video')
-        INSTAGRAM_POST = 'IP', _('Instagram post')
-
-    type_of_social_media = models.CharField(max_length=2, choices=ContentType.choices, default=None)
-    channel_name = models.ForeignKey(
-        'Influencer',
-        on_delete=models.CASCADE,
-        blank=True
-    )
-    video_name = models.CharField(max_length=100, unique=True, null=True,
-                                  blank=True)
 
     video_url = models.CharField(max_length=100, unique=True, null=True)
     date_of_publication = models.DateField(blank=True)
@@ -118,14 +105,15 @@ class ArtzProductUS(models.Model):
 
 class Shipment(models.Model):
     channel_name = models.ForeignKey("Influencer", on_delete=models.CASCADE, null=True)
-    NEED_TO_SHIP = "Need to be shipped"
-    SHIPPED = "Shipped"
-    SHIPMENT_STATUS = (
-        (NEED_TO_SHIP, "Need to be shipped"),
-        (SHIPPED, "Shipped"),
-    )
+
+    class ShipmentStatus(TextChoices):
+        NEED_TO_SHIP = "Need to be shipped"
+        SHIPPED = "Shipped"
+
     shipment_status = models.CharField(
-        max_length=18, choices=SHIPMENT_STATUS, default=NEED_TO_SHIP
+        max_length=18,
+        choices=ShipmentStatus.choices,
+        default=ShipmentStatus.NEED_TO_SHIP,
     )
     product = models.ManyToManyField("ArtzProductUS", related_name="products")
 
