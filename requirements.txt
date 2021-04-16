@@ -11,7 +11,7 @@ click==7.1.2
 defusedxml==0.6.0
 Django==3.0.5
 django-appconf==1.0.4
-django-debug-toolbar==3.1.1
+django-debug-toolbar==3.2.1
 django-enumchoicefield==2.0.0
 django-redis==4.12.1
 django-select2==7.4.2
